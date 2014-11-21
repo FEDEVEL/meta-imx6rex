@@ -1,0 +1,74 @@
+From 9ed8ff18efeb8f39288df15c8874b07cc4651ad3 Mon Sep 17 00:00:00 2001
+From: robertferanec <robert.feranec@fedevel.com>
+Date: Fri, 21 Nov 2014 06:13:10 -0800
+Subject: [PATCH] Ethernet KSZ9021 is working
+
+---
+ board/freescale/mx6sabresd/mx6sabresd.c |   17 ++++++++++-------
+ include/configs/mx6sabre_common.h       |    5 +++--
+ 2 files changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/board/freescale/mx6sabresd/mx6sabresd.c b/board/freescale/mx6sabresd/mx6sabresd.c
+index eb1e01a..de9e155 100644
+--- a/board/freescale/mx6sabresd/mx6sabresd.c
++++ b/board/freescale/mx6sabresd/mx6sabresd.c
+@@ -221,6 +221,10 @@ int board_mmc_init(bd_t *bis)
+ }
+ #endif
+ 
++#define MII_1000BASET_CTRL		0x9
++#define MII_EXTENDED_CTRL		0xb
++#define MII_EXTENDED_DATAW		0xc
++
+ int mx6_rgmii_rework(struct phy_device *phydev)
+ {
+ 
+@@ -229,14 +233,13 @@ int mx6_rgmii_rework(struct phy_device *phydev)
+ 	//phy_write(devname, phy_addr, 0x9, 0x1c00);
+ 
+ 	/* min rx data delay */
+-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0b, 0x8105);
+-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0c, 0x0000);
++	phy_write(phydev, MII_EXTENDED_CTRL, 0x0b, 0x8105);
++	phy_write(phydev, MII_EXTENDED_DATAW, 0x0c, 0x0000);
+ 
+ 	/* max rx/tx clock delay, min rx/tx control delay */
+-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0b, 0x8104);
+-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0c, 0xf0f0);
+-	phy_write(phydev, MDIO_DEVAD_NONE, 0x0b, 0x104);
+-
++	phy_write(phydev, MII_EXTENDED_CTRL, 0x0b, 0x8104);
++	phy_write(phydev, MII_EXTENDED_DATAW, 0x0c, 0xf0f0);
++	phy_write(phydev, MII_EXTENDED_CTRL, 0x0b, 0x104);
+ 	return 0;
+ }
+ 
+@@ -498,6 +501,6 @@ int board_late_init(void)
+ 
+ int checkboard(void)
+ {
+-	puts("Board: iMX6 Rex 21-NOV-2014 10:58\n");
++	puts("Board: iMX6 Rex\n");
+ 	return 0;
+ }
+diff --git a/include/configs/mx6sabre_common.h b/include/configs/mx6sabre_common.h
+index 5ee7fa5..4cf1198 100644
+--- a/include/configs/mx6sabre_common.h
++++ b/include/configs/mx6sabre_common.h
+@@ -61,10 +61,11 @@
+ #define IMX_FEC_BASE			ENET_BASE_ADDR
+ #define CONFIG_FEC_XCV_TYPE		RGMII
+ #define CONFIG_ETHPRIME			"FEC"
+-#define CONFIG_FEC_MXC_PHYADDR		1
++#define CONFIG_FEC_MXC_PHYADDR		3
+ 
+ #define CONFIG_PHYLIB
+-#define CONFIG_PHY_ATHEROS
++#define CONFIG_PHY_MICREL
++#define CONFIG_PHY_MICREL_KSZ9021
+ 
+ #define CONFIG_CMD_SF
+ #ifdef CONFIG_CMD_SF
+-- 
+1.7.9.5
+
