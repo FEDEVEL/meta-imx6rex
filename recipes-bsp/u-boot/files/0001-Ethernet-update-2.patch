@@ -1,0 +1,43 @@
+From 20d77eacf6b5de4c69040b5c7871071299e644f8 Mon Sep 17 00:00:00 2001
+From: robertferanec <robert.feranec@fedevel.com>
+Date: Fri, 21 Nov 2014 01:59:17 -0800
+Subject: [PATCH] Ethernet update 2
+
+---
+ board/freescale/mx6sabresd/mx6sabresd.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/board/freescale/mx6sabresd/mx6sabresd.c b/board/freescale/mx6sabresd/mx6sabresd.c
+index e695f63..eb1e01a 100644
+--- a/board/freescale/mx6sabresd/mx6sabresd.c
++++ b/board/freescale/mx6sabresd/mx6sabresd.c
+@@ -229,13 +229,13 @@ int mx6_rgmii_rework(struct phy_device *phydev)
+ 	//phy_write(devname, phy_addr, 0x9, 0x1c00);
+ 
+ 	/* min rx data delay */
+-	phy_write(devname, phy_addr, 0x0b, 0x8105);
+-	phy_write(devname, phy_addr, 0x0c, 0x0000);
++	phy_write(phydev, MDIO_DEVAD_NONE, 0x0b, 0x8105);
++	phy_write(phydev, MDIO_DEVAD_NONE, 0x0c, 0x0000);
+ 
+ 	/* max rx/tx clock delay, min rx/tx control delay */
+-	phy_write(devname, phy_addr, 0x0b, 0x8104);
+-	phy_write(devname, phy_addr, 0x0c, 0xf0f0);
+-	phy_write(devname, phy_addr, 0x0b, 0x104);
++	phy_write(phydev, MDIO_DEVAD_NONE, 0x0b, 0x8104);
++	phy_write(phydev, MDIO_DEVAD_NONE, 0x0c, 0xf0f0);
++	phy_write(phydev, MDIO_DEVAD_NONE, 0x0b, 0x104);
+ 
+ 	return 0;
+ }
+@@ -498,6 +498,6 @@ int board_late_init(void)
+ 
+ int checkboard(void)
+ {
+-	puts("Board: iMX6 Rex\n");
++	puts("Board: iMX6 Rex 21-NOV-2014 10:58\n");
+ 	return 0;
+ }
+-- 
+1.7.9.5
+
