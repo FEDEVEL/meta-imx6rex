@@ -1,0 +1,24 @@
+From 110247d13a873ee331d7a5b8317a6f7f4b12222c Mon Sep 17 00:00:00 2001
+From: robertferanec <robert.feranec@fedevel.com>
+Date: Fri, 21 Nov 2014 01:02:20 -0800
+Subject: [PATCH] Initial change: Board name change
+
+---
+ board/freescale/mx6sabresd/mx6sabresd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/board/freescale/mx6sabresd/mx6sabresd.c b/board/freescale/mx6sabresd/mx6sabresd.c
+index 12d8c56..c8a96af 100644
+--- a/board/freescale/mx6sabresd/mx6sabresd.c
++++ b/board/freescale/mx6sabresd/mx6sabresd.c
+@@ -502,6 +502,6 @@ int board_late_init(void)
+ 
+ int checkboard(void)
+ {
+-	puts("Board: MX6-SabreSD\n");
++	puts("Board: iMX6 Rex\n");
+ 	return 0;
+ }
+-- 
+1.7.9.5
+
