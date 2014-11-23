@@ -1,0 +1,141 @@
+From 32c8f95394e909d566998e0a05511feed2a99ad8 Mon Sep 17 00:00:00 2001
+From: robertferanec <robert.feranec@fedevel.com>
+Date: Sun, 23 Nov 2014 05:33:20 -0800
+Subject: [PATCH] Pin configuration updated
+
+---
+ board/freescale/mx6sabresd/mx6sabresd.c |   40 +++----------------------------
+ include/configs/mx6sabresd.h            |    2 +-
+ 2 files changed, 4 insertions(+), 38 deletions(-)
+
+diff --git a/board/freescale/mx6sabresd/mx6sabresd.c b/board/freescale/mx6sabresd/mx6sabresd.c
+index b41a62f..c38fc99 100644
+--- a/board/freescale/mx6sabresd/mx6sabresd.c
++++ b/board/freescale/mx6sabresd/mx6sabresd.c
+@@ -68,7 +68,7 @@ iomux_v3_cfg_t const enet_pads[] = {
+ 	MX6_PAD_RGMII_RD2__RGMII_RD2	| MUX_PAD_CTRL(ENET_PAD_CTRL),
+ 	MX6_PAD_RGMII_RD3__RGMII_RD3	| MUX_PAD_CTRL(ENET_PAD_CTRL),
+ 	MX6_PAD_RGMII_RX_CTL__RGMII_RX_CTL	| MUX_PAD_CTRL(ENET_PAD_CTRL),
+-	/* AR8031 PHY Reset */
++	/* PHY Reset */
+ 	MX6_PAD_ENET_CRS_DV__GPIO1_IO25		| MUX_PAD_CTRL(NO_PAD_CTRL),
+ };
+ 
+@@ -76,7 +76,7 @@ static void setup_iomux_enet(void)
+ {
+ 	imx_iomux_v3_setup_multiple_pads(enet_pads, ARRAY_SIZE(enet_pads));
+ 
+-	/* Reset AR8031 PHY */
++	/* Reset PHY */
+ 	gpio_direction_output(IMX_GPIO_NR(1, 25) , 0);
+ 	udelay(500);
+ 	gpio_set_value(IMX_GPIO_NR(1, 25), 1);
+@@ -110,19 +110,6 @@ iomux_v3_cfg_t const usdhc3_pads[] = {
+ 	MX6_PAD_NANDF_D0__GPIO2_IO00    | MUX_PAD_CTRL(NO_PAD_CTRL), /* CD */
+ };
+ 
+-iomux_v3_cfg_t const usdhc4_pads[] = {
+-	MX6_PAD_SD4_CLK__SD4_CLK   | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+-	MX6_PAD_SD4_CMD__SD4_CMD   | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+-	MX6_PAD_SD4_DAT0__SD4_DATA0 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+-	MX6_PAD_SD4_DAT1__SD4_DATA1 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+-	MX6_PAD_SD4_DAT2__SD4_DATA2 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+-	MX6_PAD_SD4_DAT3__SD4_DATA3 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+-	MX6_PAD_SD4_DAT4__SD4_DATA4 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+-	MX6_PAD_SD4_DAT5__SD4_DATA5 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+-	MX6_PAD_SD4_DAT6__SD4_DATA6 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+-	MX6_PAD_SD4_DAT7__SD4_DATA7 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+-};
+-
+ iomux_v3_cfg_t const ecspi3_pads[] = {
+ 	MX6_PAD_DISP0_DAT0__ECSPI3_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL),
+ 	MX6_PAD_DISP0_DAT2__ECSPI3_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL),
+@@ -135,22 +122,15 @@ static void setup_spi(void)
+ 	imx_iomux_v3_setup_multiple_pads(ecspi3_pads, ARRAY_SIZE(ecspi3_pads));
+ }
+ 
+-iomux_v3_cfg_t const di0_pads[] = {
+-	MX6_PAD_DI0_DISP_CLK__IPU1_DI0_DISP_CLK,	/* DISP0_CLK */
+-	MX6_PAD_DI0_PIN2__IPU1_DI0_PIN02,		/* DISP0_HSYNC */
+-	MX6_PAD_DI0_PIN3__IPU1_DI0_PIN03,		/* DISP0_VSYNC */
+-};
+-
+ static void setup_iomux_uart(void)
+ {
+ 	imx_iomux_v3_setup_multiple_pads(uart1_pads, ARRAY_SIZE(uart1_pads));
+ }
+ 
+ #ifdef CONFIG_FSL_ESDHC
+-struct fsl_esdhc_cfg usdhc_cfg[3] = {
++struct fsl_esdhc_cfg usdhc_cfg[2] = {
+ 	{USDHC2_BASE_ADDR},
+ 	{USDHC3_BASE_ADDR},
+-	{USDHC4_BASE_ADDR},
+ };
+ 
+ #define USDHC2_CD_GPIO	IMX_GPIO_NR(2, 2)
+@@ -168,9 +148,6 @@ int board_mmc_getcd(struct mmc *mmc)
+ 	case USDHC3_BASE_ADDR:
+ 		ret = !gpio_get_value(USDHC3_CD_GPIO);
+ 		break;
+-	case USDHC4_BASE_ADDR:
+-		ret = 1; /* eMMC/uSDHC4 is always present */
+-		break;
+ 	}
+ 
+ 	return ret;
+@@ -186,7 +163,6 @@ int board_mmc_init(bd_t *bis)
+ 	 * (U-boot device node)    (Physical Port)
+ 	 * mmc0                    SD2
+ 	 * mmc1                    SD3
+-	 * mmc2                    eMMC
+ 	 */
+ 	for (i = 0; i < CONFIG_SYS_FSL_USDHC_NUM; i++) {
+ 		switch (i) {
+@@ -202,11 +178,6 @@ int board_mmc_init(bd_t *bis)
+ 			gpio_direction_input(USDHC3_CD_GPIO);
+ 			usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
+ 			break;
+-		case 2:
+-			imx_iomux_v3_setup_multiple_pads(
+-				usdhc4_pads, ARRAY_SIZE(usdhc4_pads));
+-			usdhc_cfg[2].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
+-			break;
+ 		default:
+ 			printf("Warning: you configured more USDHC controllers"
+ 			       "(%d) then supported by the board (%d)\n",
+@@ -391,9 +362,6 @@ static void setup_display(void)
+ 	struct iomuxc *iomux = (struct iomuxc *)IOMUXC_BASE_ADDR;
+ 	int reg;
+ 
+-	/* Setup HSYNC, VSYNC, DISP_CLK for debugging purposes */
+-	imx_iomux_v3_setup_multiple_pads(di0_pads, ARRAY_SIZE(di0_pads));
+-
+ 	enable_ipu_clock();
+ 	imx_setup_hdmi();
+ 
+@@ -484,8 +452,6 @@ static const struct boot_mode board_boot_modes[] = {
+ 	/* 4 bit bus width */
+ 	{"sd2",	 MAKE_CFGVAL(0x40, 0x28, 0x00, 0x00)},
+ 	{"sd3",	 MAKE_CFGVAL(0x40, 0x30, 0x00, 0x00)},
+-	/* 8 bit bus width */
+-	{"emmc", MAKE_CFGVAL(0x40, 0x38, 0x00, 0x00)},
+ 	{NULL,	 0},
+ };
+ #endif
+diff --git a/include/configs/mx6sabresd.h b/include/configs/mx6sabresd.h
+index c576f6b..226a562 100644
+--- a/include/configs/mx6sabresd.h
++++ b/include/configs/mx6sabresd.h
+@@ -27,7 +27,7 @@
+ 
+ #include "mx6sabre_common.h"
+ 
+-#define CONFIG_SYS_FSL_USDHC_NUM	3
++#define CONFIG_SYS_FSL_USDHC_NUM	2
+ #if defined(CONFIG_ENV_IS_IN_MMC)
+ #define CONFIG_SYS_MMC_ENV_DEV		1	/* SDHC3 */
+ #endif
+-- 
+1.7.9.5
+
