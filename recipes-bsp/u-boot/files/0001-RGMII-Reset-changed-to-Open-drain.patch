@@ -1,0 +1,36 @@
+From fe57ebbc922cf83503fb64e1599f046645470534 Mon Sep 17 00:00:00 2001
+From: robertferanec <robert.feranec@fedevel.com>
+Date: Tue, 25 Nov 2014 02:17:26 -0800
+Subject: [PATCH] RGMII Reset changed to Open drain
+
+---
+ board/freescale/mx6sabresd/mx6sabresd.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/board/freescale/mx6sabresd/mx6sabresd.c b/board/freescale/mx6sabresd/mx6sabresd.c
+index c38fc99..b8fdf9c 100644
+--- a/board/freescale/mx6sabresd/mx6sabresd.c
++++ b/board/freescale/mx6sabresd/mx6sabresd.c
+@@ -40,6 +40,10 @@ DECLARE_GLOBAL_DATA_PTR;
+ #define SPI_PAD_CTRL (PAD_CTL_HYS | PAD_CTL_SPEED_MED | \
+ 		      PAD_CTL_DSE_40ohm | PAD_CTL_SRE_FAST)
+ 
++#define RGMIIRST_PAD_CTRL  (PAD_CTL_PUS_100K_UP |			\
++	PAD_CTL_SPEED_MED | PAD_CTL_DSE_40ohm |			\
++	PAD_CTL_SRE_FAST  | PAD_CTL_HYS | PAD_CTL_ODE)
++
+ int dram_init(void)
+ {
+ 	gd->ram_size = get_ram_size((void *)PHYS_SDRAM, PHYS_SDRAM_SIZE);
+@@ -69,7 +73,7 @@ iomux_v3_cfg_t const enet_pads[] = {
+ 	MX6_PAD_RGMII_RD3__RGMII_RD3	| MUX_PAD_CTRL(ENET_PAD_CTRL),
+ 	MX6_PAD_RGMII_RX_CTL__RGMII_RX_CTL	| MUX_PAD_CTRL(ENET_PAD_CTRL),
+ 	/* PHY Reset */
+-	MX6_PAD_ENET_CRS_DV__GPIO1_IO25		| MUX_PAD_CTRL(NO_PAD_CTRL),
++	MX6_PAD_ENET_CRS_DV__GPIO1_IO25		| MUX_PAD_CTRL(RGMIIRST_PAD_CTRL),
+ };
+ 
+ static void setup_iomux_enet(void)
+-- 
+1.7.9.5
+
